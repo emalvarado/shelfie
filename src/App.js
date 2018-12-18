@@ -1,25 +1,68 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
+import Dashboard from './components/Dashboard/Dashboard';
+import Form from './components/Form/Form';
+import Header from './components/Header/Header';
+import axios from 'axios'
+
+
+
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      inventory: [],
+      selectedItem: null,
+      // edit: false
+    }
+  }
+
+
+
+  componentDidMount() {
+    this.getInventory()
+  }
+
+  getInventory = () => {
+    axios.get(`/api/inventory`).then(res => {
+      // console.log(res)
+      this.setState({
+        inventory: res.data
+      })
+    })
+  }
+
+  selectItem = (id) => {
+// console.log(id)
+    this.setState({
+      selectedItem: id
+    })
+  }
+
+// toggleEdit=()=>{
+//   this.setState({
+//     edit: !this.state.edit
+//   })
+//   console.log(this.state.edit)
+// }
+
+
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <Header />
+        <Dashboard selectItem={this.selectItem}
+        toggleEdit={this.toggleEdit}
+        edit={this.state.edit}
+        getInventory={this.getInventory}
+          inventory={this.state.inventory} />
+        <Form edit={this.state.edit}
+        selectedItem={this.state.selectedItem}
+          getInventory={this.getInventory}
+          inventory={this.state.inventory} />
       </div>
     );
   }
